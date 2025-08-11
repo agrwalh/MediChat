@@ -13,6 +13,7 @@ import {
   Pill,
   ShoppingCart,
   BrainCircuit,
+  Languages,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -35,8 +36,9 @@ import PrescriptionGenerator from './prescription-generator';
 import MedicineInfo from './medicine-info';
 import Pharmacy from './pharmacy';
 import MentalHealthCompanion from './mental-health-companion';
+import HealthReportTranslator from './health-report-translator';
 
-type View = 'symptoms' | 'summarizer' | 'resources' | 'ai-doctor' | 'skin-lesion' | 'prescription' | 'medicine-info' | 'pharmacy' | 'mental-health';
+type View = 'symptoms' | 'summarizer' | 'resources' | 'ai-doctor' | 'skin-lesion' | 'prescription' | 'medicine-info' | 'pharmacy' | 'mental-health' | 'translator';
 
 export function AppShell() {
   const [activeView, setActiveView] = React.useState<View>('symptoms');
@@ -61,6 +63,8 @@ export function AppShell() {
         return <Pharmacy />;
       case 'mental-health':
         return <MentalHealthCompanion />;
+      case 'translator':
+        return <HealthReportTranslator />;
       default:
         return <SymptomAnalyzer />;
     }
@@ -107,6 +111,16 @@ export function AppShell() {
               >
                 <Stethoscope />
                 <span>Symptom Analyzer</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setActiveView('translator')}
+                isActive={activeView === 'translator'}
+                tooltip="Report Translator"
+              >
+                <Languages />
+                <span>Report Translator</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -189,6 +203,7 @@ export function AppShell() {
               {activeView === 'resources' && 'Health Resources'}
               {activeView === 'ai-doctor' && 'AI Doctor'}
               {activeView === 'mental-health' && 'Mental Health Companion'}
+              {activeView === 'translator' && 'Health Report Translator'}
             </h1>
            </div>
         </header>

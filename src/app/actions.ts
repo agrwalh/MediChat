@@ -15,6 +15,8 @@ import { getMedicineInfo } from '@/ai/flows/medicine-info';
 import type { MedicineInfoOutput } from '@/ai/flows/medicine-info';
 import { talkToCompanion } from '@/ai/flows/mental-health-agent';
 import type { MentalHealthAgentOutput } from '@/ai/flows/mental-health-agent';
+import { translateHealthReport } from '@/ai/flows/health-report-translator';
+import type { HealthReportTranslatorInput, HealthReportTranslatorOutput } from '@/ai/flows/health-report-translator';
 
 
 export async function analyzeSymptomsAction(symptoms: string): Promise<{ data?: SymptomAnalyzerOutput; error?: string }> {
@@ -103,5 +105,21 @@ export async function talkToCompanionAction(prompt: string, history: string[]): 
   } catch (e) {
     console.error(e);
     return { error: 'An unexpected error occurred. Please try again later.' };
+  }
+}
+
+export async function translateHealthReportAction(input: HealthReportTranslatorInput): Promise<{ data?: HealthReportTranslatorOutput; error?: string }> {
+  if (!input.text || input.text.trim().length < 10) {
+    return { error: 'Please enter the health report text (at least 10 characters).' };
+  }
+  if (!input.targetLanguage) {
+    return { error: 'Please select a target language.' };
+  }
+  try {
+    const result = await translateHealthReport(input);
+    return { data: result };
+  } catch (e) {
+    console.error(e);
+    return { error: 'An unexpected error occurred during translation. Please try again later.' };
   }
 }
