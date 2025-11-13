@@ -5,7 +5,7 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Lightbulb, Loader2, ShieldAlert } from 'lucide-react';
+import { Lightbulb, Loader2, ShieldAlert, Stethoscope, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +24,7 @@ import { analyzeSymptomsAction } from '@/app/actions';
 import type { SymptomAnalyzerOutput } from '@/ai/flows/symptom-analyzer';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { FeatureHeader } from './feature-header';
 
 const FormSchema = z.object({
   symptoms: z.string().min(10, {
@@ -76,43 +77,104 @@ export default function SymptomAnalyzer() {
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">Analyze Your Symptoms</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="symptoms"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Describe your symptoms</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="e.g., 'I have a sore throat, headache, and a slight fever.'"
-                        className="min-h-[100px] resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      The more detail you provide, the more accurate the analysis will be.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isLoading} className="bg-accent hover:bg-accent/90">
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Analyze Symptoms
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-      
+    <div className="space-y-8">
+      <FeatureHeader
+        icon={Stethoscope}
+        subtitle="Symptom Intelligence"
+        title="Explain how you're feeling, and AidFusion guides the next steps."
+        description="Our AI cross-references millions of medical data points to surface likely causes, red flags, and practical actions. The more context you share, the smarter the insights."
+        accent="emerald"
+        stats={[
+          { label: 'Avg. response time', value: '< 8s' },
+          { label: 'Typical follow-ups', value: '3 personalised tips' },
+        ]}
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr)]">
+        <Card className="order-1 lg:order-none">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Describe Your Symptoms</CardTitle>
+            <CardDescription className="text-sm">
+              We respect your privacy. Nothing is stored unless you explicitly save it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="symptoms"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                        What’s happening today?
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="e.g., “I’ve had a mild fever for two days, dry cough, and slight chest tightness when I breathe deeply.”"
+                          className="min-h-[140px] resize-none rounded-2xl border border-slate-200 bg-white/80 p-4 text-sm shadow-inner shadow-emerald-100/40 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs text-slate-500">
+                        Include when it started, pain intensity, recent travel, allergies, or medication changes for a sharper interpretation.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 via-sky-500 to-emerald-500 px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-200/50 transition hover:shadow-emerald-300/70 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Analyze Symptoms
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden">
+          <CardHeader className="space-y-3">
+            <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+              <Sparkles className="h-5 w-5 text-emerald-500" />
+              Pro tips for accuracy
+            </CardTitle>
+            <CardDescription className="text-sm">
+              These lightning tips help the AI narrow down possible causes faster.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="rounded-2xl border border-white/50 bg-white/80 p-4 shadow-inner shadow-emerald-100/40 dark:bg-slate-900/60 dark:border-slate-800">
+              <p className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-200">
+                <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600">
+                  1
+                </span>
+                Mention when symptoms started, how they’ve changed, and anything that triggers or eases them.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/50 bg-white/80 p-4 shadow-inner shadow-emerald-100/40 dark:bg-slate-900/60 dark:border-slate-800">
+              <p className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-200">
+                <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600">
+                  2
+                </span>
+                Add relevant background (recent travel, chronic conditions, new medication, stress, or allergies).
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/50 bg-white/80 p-4 shadow-inner shadow-emerald-100/40 dark:bg-slate-900/60 dark:border-slate-800">
+              <p className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-200">
+                <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600">
+                  3
+                </span>
+                If you’re feeling severe pain, difficulty breathing, or confusion—seek emergency care immediately.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {isLoading && (
          <Card>
             <CardHeader>

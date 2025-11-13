@@ -5,7 +5,7 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Pill, Loader2, FileText, AlertTriangle } from 'lucide-react';
+import { Pill, Loader2, FileText, AlertTriangle, FlaskConical, Sparkles, Stethoscope } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getMedicineInfoAction } from '@/app/actions';
 import type { MedicineInfoOutput } from '@/ai/flows/medicine-info';
 import { Separator } from '../ui/separator';
+import { FeatureHeader } from './feature-header';
 
 const FormSchema = z.object({
   medicineName: z.string().min(2, {
@@ -60,38 +61,93 @@ export default function MedicineInfo() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">Get Medicine Information</CardTitle>
-          <CardDescription>
-            Enter the name of a medication to get its details, including usage, dosage, side effects, and precautions.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="medicineName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Medicine Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., 'Paracetamol' or 'Ibuprofen'" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isLoading} className="bg-accent hover:bg-accent/90">
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Get Info
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+    <div className="space-y-8">
+      <FeatureHeader
+        icon={FlaskConical}
+        subtitle="Medication Insights"
+        title="Understand prescriptions, from daily tablets to acute care therapies."
+        description="Search any medicine to view indications, recommended dosing, common reactions, and safety considerations. Perfect for preparing doctor questions or double-checking instructions."
+        accent="emerald"
+        stats={[
+          { label: 'Medication library', value: '10k+ entries' },
+          { label: 'Safety watchlist', value: 'Auto highlights' },
+        ]}
+      />
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr),minmax(0,1fr)]">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-headline">Get medicine information</CardTitle>
+            <CardDescription className="text-sm text-slate-500 dark:text-slate-300">
+              Enter a brand or generic name to surface usage guidance, dosage ranges, and contraindications.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="medicineName"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                        Medicine name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Paracetamol, Metformin XR, Amoxicillin"
+                          className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm shadow-inner shadow-emerald-100/40 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 dark:border-slate-700 dark:bg-slate-900/70"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 via-sky-500 to-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-200/60 transition hover:shadow-emerald-300/70 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Get Info
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card className="space-y-6">
+          <CardContent className="space-y-5">
+            <div className="rounded-2xl border border-white/60 bg-white/80 p-5 shadow-inner shadow-emerald-100/40 dark:border-slate-800 dark:bg-slate-900/60">
+              <div className="flex items-center gap-3 text-sm font-semibold text-slate-700 dark:text-slate-100">
+                <Sparkles className="h-5 w-5 text-emerald-500" />
+                Tips for accurate searches
+              </div>
+              <ul className="mt-3 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <li className="rounded-xl border border-white/50 bg-white/70 px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
+                  Add formulation: “Metformin ER 500mg” yields more precise dosing details.
+                </li>
+                <li className="rounded-xl border border-white/50 bg-white/70 px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
+                  Mention the condition you’re treating to surface relevant precautions.
+                </li>
+                <li className="rounded-xl border border-white/50 bg-white/70 px-4 py-2 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
+                  Cross-check with your pharmacist before adjusting medication routines.
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-white/60 bg-white/80 p-5 text-sm text-slate-500 shadow-inner shadow-emerald-100/40 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-100">
+                <Stethoscope className="h-5 w-5 text-emerald-500" />
+                Talk to your clinician
+              </div>
+              <p className="mt-2 leading-relaxed">
+                AidFusion helps you prepare questions. Before changing dosages, combining medicines, or stopping a therapy, confirm with a licensed healthcare professional.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       
       {isLoading && (
          <Card>

@@ -5,7 +5,7 @@ import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { FileText, Link as LinkIcon, Loader2 } from 'lucide-react';
+import { FileText, Link as LinkIcon, Loader2, BookOpenCheck, BookmarkPlus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 import { summarizeTopicAction } from '@/app/actions';
 import type { MedicalSummarizerOutput } from '@/ai/flows/medical-summarizer';
 import { Separator } from '../ui/separator';
+import { FeatureHeader } from './feature-header';
 
 const FormSchema = z.object({
   topic: z.string().min(3, {
@@ -60,38 +61,91 @@ export default function MedicalSummarizer() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">Summarize a Medical Topic</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="topic"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Medical Topic</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., 'Type 2 Diabetes'" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Enter a medical condition, treatment, or term to summarize.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isLoading} className="bg-accent hover:bg-accent/90">
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Summarize Topic
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+    <div className="space-y-8">
+      <FeatureHeader
+        icon={BookOpenCheck}
+        subtitle="Medical Knowledge Digest"
+        title="Turn complex medical language into clear, actionable insights."
+        description="Whether you're reviewing a new diagnosis or researching a treatment option, AidFusion translates clinical jargon into plain language summaries backed by reputable sources."
+        accent="sky"
+        stats={[
+          { label: 'Sources per summary', value: '5+ vetted links' },
+          { label: 'Reading time saved', value: '~12 minutes' },
+        ]}
+      />
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr),minmax(0,1fr)]">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-headline">Summarize a Medical Topic</CardTitle>
+            <p className="text-sm text-slate-500 dark:text-slate-300">
+              Ideal for discharge notes, research articles, or complex medical terminology.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="topic"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                        What should we decode?
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., 'Type 2 Diabetes management guidelines'"
+                          className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm shadow-inner shadow-sky-100/40 focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs text-slate-500">
+                        Enter a specific condition, therapy, lab test, or even paste a complex sentence to simplify.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-sky-500 via-emerald-500 to-sky-500 px-6 py-3 text-sm font-semibold shadow-lg shadow-sky-200/50 transition hover:shadow-sky-300/70 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Summarize Topic
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card className="space-y-5">
+          <CardHeader className="space-y-3">
+            <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+              <BookmarkPlus className="h-5 w-5 text-sky-500" />
+              Try exploring…
+            </CardTitle>
+            <p className="text-sm text-slate-500 dark:text-slate-300">
+              Popular topics other AidFusion members decode often.
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-2xl border border-white/50 bg-white/80 p-4 text-sm shadow-inner shadow-sky-100/50 dark:border-slate-800 dark:bg-slate-900/60">
+              <p className="font-semibold text-slate-700 dark:text-slate-100">Autoimmune conditions</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">e.g., systemic lupus, rheumatoid arthritis flare management.</p>
+            </div>
+            <div className="rounded-2xl border border-white/50 bg-white/80 p-4 text-sm shadow-inner shadow-sky-100/50 dark:border-slate-800 dark:bg-slate-900/60">
+              <p className="font-semibold text-slate-700 dark:text-slate-100">Cancer therapies</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">Break down combinations like chemo-immunotherapy or targeted agents.</p>
+            </div>
+            <div className="rounded-2xl border border-white/50 bg-white/80 p-4 text-sm shadow-inner shadow-sky-100/50 dark:border-slate-800 dark:bg-slate-900/60">
+              <p className="font-semibold text-slate-700 dark:text-slate-100">Diagnostics & labs</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">Clarify MRI findings, pathology reports, or genetic screening results.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       
       {isLoading && (
          <Card>

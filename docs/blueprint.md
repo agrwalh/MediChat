@@ -1,4 +1,4 @@
-# **App Name**: MediChat
+# **App Name**: AidFusion
 
 ## Core Features:
 

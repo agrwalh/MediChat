@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { analyzeSkinLesionAction } from '@/app/actions';
 import type { SkinLesionAnalyzerOutput } from '@/ai/flows/skin-lesion-analyzer';
+import { FeatureHeader } from './feature-header';
 
 const FormSchema = z.object({
   image: z.custom<File>((v) => v instanceof File, {
@@ -84,12 +85,24 @@ export default function SkinLesionAnalyzer() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <FeatureHeader
+        icon={ScanSearch}
+        subtitle="Dermatology Preview"
+        title="Upload a photo—AidFusion highlights patterns worth sharing with a dermatologist."
+        description="Early awareness matters. Our skin model reviews lighting, symmetry, border sharpness, and color variance to flag potential concerns. Use it to prepare questions for your skin specialist."
+        accent="violet"
+        stats={[
+          { label: 'Ideal photo', value: 'Natural light, 20cm distance' },
+          { label: 'Review time', value: '< 5 seconds' },
+        ]}
+      />
+
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline">Analyze a Skin Lesion</CardTitle>
-          <CardDescription>
-            Upload a clear, well-lit photo of a skin mole, rash, or other lesion for an AI-powered analysis. This is not a substitute for professional medical advice.
+          <CardTitle className="text-2xl font-headline">Analyze a skin lesion</CardTitle>
+          <CardDescription className="text-sm text-slate-500 dark:text-slate-300">
+            Upload a clear, well-lit photo of a mole, rash, or mark. AidFusion suggests next steps—always consult a clinician for diagnosis.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -99,36 +112,51 @@ export default function SkinLesionAnalyzer() {
                 control={form.control}
                 name="image"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image Upload</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                      Upload lesion photo
+                    </FormLabel>
                     <FormControl>
-                        <div 
-                            className="relative flex justify-center items-center w-full h-64 border-2 border-dashed border-muted-foreground rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <Input 
-                                type="file" 
-                                ref={fileInputRef}
-                                className="hidden" 
-                                onChange={handleFileChange}
-                                accept="image/png, image/jpeg, image/webp"
-                            />
-                            {preview ? (
-                                <Image src={preview} alt="Image preview" layout="fill" objectFit="contain" className="rounded-lg" />
-                            ) : (
-                                <div className="text-center text-muted-foreground">
-                                    <Upload className="mx-auto h-12 w-12 mb-2" />
-                                    <p>Click to upload or drag and drop</p>
-                                    <p className="text-xs">PNG, JPG, or WEBP</p>
-                                </div>
-                            )}
-                        </div>
+                      <div
+                        className="relative flex h-72 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-3xl border border-dashed border-violet-400/60 bg-white/80 text-center shadow-inner shadow-violet-100/40 transition hover:border-violet-500 hover:bg-violet-50/60 dark:border-violet-500/40 dark:bg-slate-900/70"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          onChange={handleFileChange}
+                          accept="image/png, image/jpeg, image/webp"
+                        />
+                        {preview ? (
+                          <Image
+                            src={preview}
+                            alt="Image preview"
+                            fill
+                            className="object-contain"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center gap-3 text-slate-500 dark:text-slate-300">
+                            <Upload className="h-12 w-12 text-violet-500" />
+                            <div className="text-sm font-semibold">
+                              Click to upload or drag and drop
+                            </div>
+                            <p className="text-xs text-slate-400">
+                              JPEG, PNG, WEBP • Keep background matte for best results
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={isLoading || !preview} className="bg-accent hover:bg-accent/90">
+              <Button
+                type="submit"
+                disabled={isLoading || !preview}
+                className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-violet-500 via-rose-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200/60 transition hover:shadow-violet-300/70 disabled:cursor-not-allowed disabled:opacity-70"
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Analyze Lesion
               </Button>
